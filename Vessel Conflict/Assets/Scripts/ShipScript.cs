@@ -24,7 +24,6 @@ public class ShipScript : MonoBehaviour
     public void ClearTileList()
     {
         touchTiles.Clear();
-
     }
 
     public Vector3 GetOffsetVec(Vector3 tilePos)

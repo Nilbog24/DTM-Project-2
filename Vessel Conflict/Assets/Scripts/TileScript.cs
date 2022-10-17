@@ -7,7 +7,6 @@ public class TileScript : MonoBehaviour
     GameManager gameManager;
     Ray ray;
     RaycastHit hit;
-
     private bool missileHit = false;
     Color32[] hitColor = new Color32[2];
     // Start is called before the first frame update
