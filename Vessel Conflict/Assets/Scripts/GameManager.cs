@@ -7,12 +7,21 @@ public class GameManager : MonoBehaviour
     public GameObject[] ships;
     private bool setupComplete = false;
     private bool playerOneTurn = true;
-    public int shipIndex = 1;
+    public List<int> playerOneShipIndex;
+    private int indexNum;
     public ShipScript shipScript; 
     // Start is called before the first frame update
     void Start()
-    {
-        shipScript = ships[shipIndex].GetComponent<ShipScript>();   
+    {  
+        while (playerOneShipIndex.Count <=4) 
+        {
+            int indexNum = Random.Range(0, 16);
+            if (!playerOneShipIndex.Contains(indexNum)) 
+            {
+                playerOneShipIndex.Add(indexNum);
+            }
+        }
+        shipScript = ships[playerOneShipIndex[0]].GetComponent<ShipScript>();
     }
 
     // Update is called once per frame
@@ -35,10 +44,10 @@ public class GameManager : MonoBehaviour
 
     private void PlaceShip(GameObject tile)
     {
-        shipScript = ships[shipIndex].GetComponent<ShipScript>();
+        shipScript = ships[playerOneShipIndex[0]].GetComponent<ShipScript>();
         shipScript.ClearTileList();
         Vector3 newVec = shipScript.GetOffsetVec(tile.transform.position);
-        ships[shipIndex].transform.position = newVec;
+        ships[playerOneShipIndex[0]].transform.position = newVec;
 
     }
 }
