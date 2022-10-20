@@ -12,6 +12,7 @@ public class GameManager : MonoBehaviour
 {
     public GameObject[] ships;
     public Button nextBtn;
+    public Button replayBtn;
     // public Button rotateBtn;
     private bool setupComplete = false;
     private bool playerOneTurn = true;
@@ -28,6 +29,8 @@ public class GameManager : MonoBehaviour
     private int playerShipCount = 5;
     public GameObject firePrefab;
     private List<GameObject> playerFires;
+    private List<GameObject> enemyFires;
+    public List<TileScript> allTileScripts;
     public Text topText;
     public Text playerShipText;
     public Text enemyShipText;
@@ -87,7 +90,10 @@ public class GameManager : MonoBehaviour
     {
         if(setupComplete && playerOneTurn)
         {
-            // SHooting?
+            Vector3 tilePos = tile.transform.position;
+            tilePos.y += 15;
+            playerOneTurn = false;
+            Instantiate(missilePrefab, tilePos, missilePrefab.transform.rotation);
         }
         else if(!setupComplete)
         {
@@ -133,13 +139,16 @@ public class GameManager : MonoBehaviour
                 {
                     enemyShipCount--;
                     topText.text = "Shunk";
-                    // enemy fires
-                    // color
+                    enemyFires.Add(Instantiate(firePrefab, tile.transform.position, Quaternion.identity));
+                    tile.GetComponent<TileScript>().SetTileColor(1, new Color32(68, 0, 0, 255));
+                    tile.GetComponent<TileScript>().SwitchColors(1);
+
                 }
                 else
                 {
                     topText.text = "Hutr";
-                    // color
+                    tile.GetComponent<TileScript>().SetTileColor(1, new Color32(255, 0, 0, 255));
+                    tile.GetComponent<TileScript>().SwitchColors(1);
                 }
                 break;
             }
@@ -147,10 +156,12 @@ public class GameManager : MonoBehaviour
         }
         if(hitCount == 0)
         {
-            // color
+            tile.GetComponent<TileScript>().SetTileColor(1, new Color32(38, 57, 76, 255));
+            tile.GetComponent<TileScript>().SwitchColors(1); 
+            Debug.Log("Po");
             topText.text = "[insert lowtiergod speech here]";
         }
-        // Invoke("EndPlayerTurn", 1.0f);
+         Invoke("EndPlayerTurn", 1.0f);
     }
 
     public void EnemyHitPlayer(Vector3 tile, int tileNum, GameObject hitObj)
@@ -164,6 +175,73 @@ public class GameManager : MonoBehaviour
             playerShipText.text = playerShipCount.ToString();
             enemyScript.SunkPlayer();
         }
-        // Invoke("EndEnemyTurn", 2.0f);
+        Invoke("EndEnemyTurn", 2.0f);
+    }
+
+    private void EndPlayerTurn()
+    {
+        for (int i = 0; i < ships.Length; i++)
+        {
+            ships[i].SetActive(true);
+        }
+        foreach(GameObject fire in playerFires)
+        {
+            fire.SetActive(true);
+        }
+        foreach(GameObject fire in enemyFires)
+        {
+            fire.SetActive(false);
+        }
+        enemyShipText.text = enemyShipCount.ToString();
+        topText.text = "Enemy's turn";
+        enemyScript.NPCTurn();
+        ColorAllTiles(0);
+        if(playerShipCount < 1)
+        {
+            GameOver("You ein");
+        }
+    }
+
+    private void EndEnemyTurn()
+    {
+        for (int i = 0; i < ships.Length; i++)
+        {
+            ships[i].SetActive(false);
+        }
+        foreach(GameObject fire in playerFires)
+        {
+            fire.SetActive(false);
+        }
+        foreach(GameObject fire in enemyFires)
+        {
+            fire.SetActive(true);
+        }
+        playerShipText.text = playerShipCount.ToString();
+        topText.text = "piek a tiel";
+        enemyScript.NPCTurn();
+        ColorAllTiles(1);
+        if(enemyShipCount < 1)
+        {
+            GameOver("You lost bozo");
+        }
+    }
+
+    private void ColorAllTiles(int colorIndex)
+    {
+        foreach (TileScript tileScript in allTileScripts)
+        {
+            tileScript.SwitchColors(colorIndex);
+        }
+    }
+
+    void GameOver(string winner)
+    {
+        topText.text = "Game Over " + winner;
+        replayBtn.gameObject.SetActive(true);
+    }
+
+    void ReplayClicked()
+    {
+        SceneManager.LoadScene(SceneManager.GetActiveScene().name);
     }
 }

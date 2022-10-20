@@ -13,7 +13,7 @@ public class MissileScript : MonoBehaviour
 
     private void OnCollisionEnter(Collision collision)
     {
-        // gameManager.CheckHit(Collision.gameObject);
+        gameManager.CheckHit(collision.gameObject);
         Destroy(gameObject);
     }
 }

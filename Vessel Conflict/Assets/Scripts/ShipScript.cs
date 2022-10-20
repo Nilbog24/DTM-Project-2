@@ -59,6 +59,10 @@ public class ShipScript : MonoBehaviour
 
     // public void RotateShip()
     // {
+    //     if(clickedTile == null)
+    //     {
+    //         return;
+    //     }
     //     touchTiles.Clear();
     //     transform.localEulerAngles += new Vector3(0, nextYRotation, 0);
     //     nextYRotation += 90;
