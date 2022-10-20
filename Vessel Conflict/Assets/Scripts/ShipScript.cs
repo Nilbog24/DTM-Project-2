@@ -9,6 +9,19 @@ public class ShipScript : MonoBehaviour
     public float zOffset = 0f;
     // private float nextYRotation = 90f;
     private GameObject clickedTile;
+    int hitCount = 0;
+    public int shipSize;
+    private Material[] allMaterials;
+    List<Color> allColors= new List<Color>();
+
+    private void OnCollisionEnter(Collision collision)
+    {
+        if(collision.gameObject.CompareTag("Tile"))
+        {
+            touchTiles.Add(collision.gameObject);
+        }
+        
+    }
 
     // Start is called before the first frame update
     void Start()
@@ -26,12 +39,12 @@ public class ShipScript : MonoBehaviour
         gameObject.name == "Ship EGMGE" || gameObject.name == "Ship EME") {
             xOffset = 0.5f;
         }
-    }
 
-    // Update is called once per frame
-    void Update()
-    {
-        
+        allMaterials = GetComponent<Renderer>().materials;
+        for(int i = 0; i < allMaterials.Length; i++)
+        {
+            allColors.Add(allMaterials[i].color);
+        }
     }
 
     public void ClearTileList()
@@ -61,11 +74,40 @@ public class ShipScript : MonoBehaviour
 
     public void SetPosition(Vector3 newVec)
     {
+        ClearTileList();
         transform.localPosition = new Vector3(newVec.x + xOffset, 2, newVec.z + zOffset);
     }
 
     public void SetClickedTile(GameObject tile)
     {
         clickedTile = tile;
+    }
+
+    public bool OnGameBoard()
+    {
+        return touchTiles.Count == shipSize;
+    }
+
+    public bool HitCheckSank()
+    {
+        hitCount++;
+        return shipSize <= hitCount;
+    }
+
+    public void FlashColor(Color tempColor)
+    {
+        foreach (Material mat in allMaterials)
+        {
+            mat.color = tempColor;
+        }
+    }
+
+    private void ResetColor()
+    {
+        int i = 0;
+        foreach(Material mat in allMaterials)
+        {
+            mat.color = allColors[i++];
+        }
     }
 }

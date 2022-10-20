@@ -1,8 +1,10 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Text.RegularExpressions;
 using System.Linq;
+using System.Text.RegularExpressions;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 public class GameManager : MonoBehaviour
@@ -23,14 +25,18 @@ public class GameManager : MonoBehaviour
 
     private int enemyShipCount = 5;
     private int playerShipCount = 5;
+    public GameObject firePrefab;
+    private List<GameObject> playerFires;
     public Text topText;
+    public Text playerShipText;
+    public Text enemyShipText;
 
     // Start is called before the first frame update
     void Start()
     {  
         while (playerOneShipIndex.Count <=4)
         {
-            int newIndexValue = Random.Range(0, 16);
+            int newIndexValue = UnityEngine.Random.Range(0, 16);
             if (!playerOneShipIndex.Contains(newIndexValue)) 
             {
                 playerOneShipIndex.Add(newIndexValue);
@@ -44,14 +50,30 @@ public class GameManager : MonoBehaviour
 
     private void NextShipClicked()
     {
-        if (indexNum <= playerOneShipIndex.Count -2)
+        if (!shipScript.OnGameBoard)
         {
-            indexNum++;
-            shipScript = ships[playerOneShipIndex[indexNum]].GetComponent<ShipScript>();
-        }else
-        {
-            enemyScript.PlaceEnemyShips();
+            shipScript.FlashColor(Color.red);
         }
+        else
+        {
+            if (indexNum <= playerOneShipIndex.Count -2)
+            {
+                indexNum++;
+                shipScript = ships[playerOneShipIndex[indexNum]].GetComponent<ShipScript>();
+                shipScript.FlashColor(Color.yellow);
+            }
+            else
+            {
+                nextBtn.gameObject.SetActive(false);
+                topText.text = "Guess dumb dummy dumbo";
+                setupComplete = true;
+                for(int i = 0; i < ships.Length; i++)
+                {
+                    ships[i].SetActive(false);
+                }
+            }
+        }
+        
     }
 
     // Update is called once per frame
@@ -88,9 +110,9 @@ public class GameManager : MonoBehaviour
 
     public void CheckHit(GameObject tile)
     {
-        int tileNum = Int32.Parse(Regex.Match(tile.name, @"/d+").Value);
+        int tileNum = Int32.Parse(Regex.Match(tile.name, @"\d+").Value);
         int hitCount = 0;
-        foreach(int tileNumArray in enemyShips)
+        foreach(int[] tileNumArray in enemyShips)
         {
             if(tileNumArray.Contains(tileNum))
             {
@@ -128,5 +150,19 @@ public class GameManager : MonoBehaviour
             topText.text = "[insert lowtiergod speech here]";
         }
         // Invoke("EndPlayerTurn", 1.0f);
+    }
+
+    public void EnemyHitPlayer(Vector3 tile, int tileNum, GameObject hitObj)
+    {
+        enemyScript.MissileHit(tileNum);
+        tile.y += 0.2f;
+        playerFires.Add(Instantiate(firePrefab, tile, Quaternion.identity));
+        if(hitObj.GetComponent<ShipScript>().HitCheckSank())
+        {
+            playerShipCount--;
+            playerShipText.text = playerShipCount.ToString();
+            enemyScript.SunkPlayer();
+        }
+        // Invoke("EndEnemyTurn", 2.0f);
     }
 }

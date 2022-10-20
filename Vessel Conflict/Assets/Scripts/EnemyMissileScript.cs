@@ -7,7 +7,7 @@ public class EnemyMissileScript : MonoBehaviour
     GameManager gameManager;
     EnemyScript enemyScript;
     public Vector3 targetTileLocation;
-    private int targetTitle = -1;
+    private int targetTile = -1;
     // Start is called before the first frame update
     void Start()
     {
@@ -19,11 +19,17 @@ public class EnemyMissileScript : MonoBehaviour
     {
         if(collision.gameObject.CompareTag("Ship"))
         {
-
+            gameManager.EnemyHitPlayer(targetTileLocation, targetTile, collision.gameObject);
         }
         else
         {
-            
+
         }
+        Destroy(gameObject);
+    }
+
+    public void SetTarget(int target)
+    {
+        targetTile = target;
     }
 }
