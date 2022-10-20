@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class ShipScript : MonoBehaviour
 {
-    List<GameObject> touchTiles = new List<GameObject>();
+    public List<GameObject> touchTiles = new List<GameObject>();
     public float xOffset = 0f;
     public float zOffset = 0f;
     // private float nextYRotation = 90f;

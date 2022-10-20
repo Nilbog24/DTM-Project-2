@@ -6,6 +6,7 @@ using System.Text.RegularExpressions;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
+using TMPro;
 
 public class GameManager : MonoBehaviour
 {
@@ -16,7 +17,7 @@ public class GameManager : MonoBehaviour
     private bool playerOneTurn = true;
     public List<int> playerOneShipIndex;
     private int newIndexValue;
-    private int indexNum;
+    public int indexNum;
     public ShipScript shipScript; 
     public EnemyScript enemyScript;
     public GameObject missilePrefab;
@@ -50,7 +51,7 @@ public class GameManager : MonoBehaviour
 
     private void NextShipClicked()
     {
-        if (!shipScript.OnGameBoard)
+        if (!shipScript.OnGameBoard())
         {
             shipScript.FlashColor(Color.red);
         }
