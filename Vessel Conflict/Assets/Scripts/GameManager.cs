@@ -37,7 +37,7 @@ public class GameManager : MonoBehaviour
     {  
         while (playerOneShipIndex.Count <=4)
         {
-            int newIndexValue = UnityEngine.Random.Range(0, 16);
+            int newIndexValue = UnityEngine.Random.Range(0, 15);
             if (!playerOneShipIndex.Contains(newIndexValue)) 
             {
                 playerOneShipIndex.Add(newIndexValue);
@@ -61,7 +61,7 @@ public class GameManager : MonoBehaviour
             {
                 indexNum++;
                 shipScript = ships[playerOneShipIndex[indexNum]].GetComponent<ShipScript>();
-                shipScript.FlashColor(Color.yellow);
+                shipScript.FlashColor(Color.blue);
             }
             else
             {

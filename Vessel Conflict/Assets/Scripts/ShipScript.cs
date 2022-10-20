@@ -100,6 +100,7 @@ public class ShipScript : MonoBehaviour
         {
             mat.color = tempColor;
         }
+        Invoke("ResetColor", 0.5f);
     }
 
     private void ResetColor()
