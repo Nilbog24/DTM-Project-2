@@ -12,7 +12,9 @@ public class TileScript : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        // This will get the game manager script
         gameManager = GameObject.Find("GameManager").GetComponent<GameManager>();
+        // These will get the two hit colours
         hitColor[0] = gameObject.GetComponent<MeshRenderer>().material.color;
         hitColor[1] = gameObject.GetComponent<MeshRenderer>().material.color;
 
@@ -20,7 +22,8 @@ public class TileScript : MonoBehaviour
 
     // Update is called once per frame
     void Update()
-    {
+    {   
+        // Everything inside of this if statement gets used to get the thing the player clicked.
         ray = Camera.main.ScreenPointToRay(Input.mousePosition);
         if(Physics.Raycast(ray, out hit))
         {
