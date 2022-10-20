@@ -7,7 +7,8 @@ public class ShipScript : MonoBehaviour
     List<GameObject> touchTiles = new List<GameObject>();
     public float xOffset = 0f;
     public float zOffset = 0f;
-
+    // private float nextYRotation = 90f;
+    private GameObject clickedTile;
 
     // Start is called before the first frame update
     void Start()
@@ -39,7 +40,32 @@ public class ShipScript : MonoBehaviour
     }
 
     public Vector3 GetOffsetVec(Vector3 tilePos)
-    {
+    { 
         return new Vector3(tilePos.x + xOffset, 2, tilePos.z + zOffset);
+    }
+
+    // public void RotateShip()
+    // {
+    //     touchTiles.Clear();
+    //     transform.localEulerAngles += new Vector3(0, nextYRotation, 0);
+    //     nextYRotation += 90;
+    //     if (nextYRotation == 360)
+    //     {
+    //         nextYRotation = 90;
+    //     }
+    //     float temp = xOffset;
+    //     xOffset = zOffset;
+    //     zOffset = temp;
+    //     SetPosition(clickedTile.transform.position);
+    // }
+
+    public void SetPosition(Vector3 newVec)
+    {
+        transform.localPosition = new Vector3(newVec.x + xOffset, 2, newVec.z + zOffset);
+    }
+
+    public void SetClickedTile(GameObject tile)
+    {
+        clickedTile = tile;
     }
 }
