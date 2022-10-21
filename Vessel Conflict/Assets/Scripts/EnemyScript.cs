@@ -7,13 +7,14 @@ public class EnemyScript : MonoBehaviour
 {
     char[] guessGrid;
     List<int> potentialHits;
-    List<int> currenthits;
+    List<int> currentHits;
     private int guess;
     public GameObject enemyMissilePrefab;
+    public GameManager gameManager;
     private void Start()
     {
         potentialHits = new List<int>();
-        currenthits = new List<int>();
+        currentHits = new List<int>();
         guessGrid = Enumerable.Repeat('o', 100).ToArray();
     }
     public List<int[]> PlaceEnemyShips()
@@ -123,13 +124,14 @@ public class EnemyScript : MonoBehaviour
             {
                 nextIndex = Random.Range(0, 100);
             }
-            guess =  nextIndex;
+            guess = nextIndex;
         }
         GameObject tile = GameObject.Find("Tile (" + (guess + 1) + ")");
         guessGrid[guess] = 'm';
         Vector3 vec = tile.transform.position; 
         vec.y += 15;
         GameObject missile = Instantiate(enemyMissilePrefab, vec, enemyMissilePrefab.transform.rotation);
+        Debug.Log(missile);
         missile.GetComponent<EnemyMissileScript>().SetTarget(guess);
         missile.GetComponent<EnemyMissileScript>().targetTileLocation = tile.transform.position;
     }
@@ -137,6 +139,7 @@ public class EnemyScript : MonoBehaviour
     public void MissileHit(int hit)
     {
         guessGrid[guess] = 'h';
+        Invoke("EndTurn", 1.0f);
     }
 
     public void SunkPlayer()
@@ -145,5 +148,34 @@ public class EnemyScript : MonoBehaviour
         {
             if (guessGrid[i] == 'h') guessGrid[i] = 'x';
         }
+    }
+
+    private void EndTurn()
+    {
+        gameManager.GetComponent<GameManager>().EndEnemyTurn();
+    }
+
+    public void PauseAndEnd(int miss)
+    {
+        if(currentHits.Count > 0 && currentHits[0] > miss)
+        {
+            foreach(int potential in potentialHits)
+            {
+                if (currentHits[0] > miss)
+                {
+                    if(potential < miss) 
+                    {
+                        potentialHits.Remove(potential);
+                    } else
+                    {
+                        if(potential > miss)
+                        {
+                            potentialHits.Remove(potential);
+                        }   
+                    }
+                }
+            }
+        }
+        Invoke("EndTurn", 1.0f);
     }
 }

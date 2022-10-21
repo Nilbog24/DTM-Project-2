@@ -15,7 +15,7 @@ public class GameManager : MonoBehaviour
     public Button replayBtn;
     // public Button rotateBtn;
     private bool setupComplete = false;
-    private bool playerOneTurn = true;
+    public bool playerOneTurn = true;
     public List<int> playerOneShipIndex;
     private int newIndexValue;
     public int indexNum;
@@ -24,12 +24,11 @@ public class GameManager : MonoBehaviour
     public GameObject missilePrefab;
     public GameObject enemyMissilePrefab;
     List<int[]> enemyShips;
-
     private int enemyShipCount = 5;
     private int playerShipCount = 5;
     public GameObject firePrefab;
-    private List<GameObject> playerFires;
-    private List<GameObject> enemyFires;
+    private List<GameObject> playerFires = new List<GameObject>();
+    private List<GameObject> enemyFires = new List<GameObject>();
     public List<TileScript> allTileScripts;
     public Text topText;
     public Text playerShipText;
@@ -53,6 +52,7 @@ public class GameManager : MonoBehaviour
         // This makes it so that when you click on the next ship button it calls the method that moves onto the next ship
         nextBtn.onClick.AddListener(() => NextShipClicked());
         // rotateBtn.onClick.AddListener(() => RotateClicked());
+        replayBtn.onClick.AddListener(() => ReplayClicked());
         enemyShips = enemyScript.PlaceEnemyShips();
     }
 
@@ -224,11 +224,12 @@ public class GameManager : MonoBehaviour
             enemyScript.SunkPlayer();
         }
         // This will end the enemies turn
+        Debug.Log("Pot");
         Invoke("EndEnemyTurn", 2.0f);
     }
 
     // This method ends the players turn
-    private void EndPlayerTurn()
+    public void EndPlayerTurn()
     {
         // This will make all of the player's ship appear
         for (int i = 0; i < ships.Length; i++)
@@ -261,7 +262,7 @@ public class GameManager : MonoBehaviour
     }
 
     //  This will hapen when the enemy's turn ends
-    private void EndEnemyTurn()
+    public void EndEnemyTurn()
     {
         // This will make all the player's ships dissapear
         for (int i = 0; i < ships.Length; i++)
