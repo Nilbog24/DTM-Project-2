@@ -10,6 +10,7 @@ public class FireScript : MonoBehaviour
     int count;
     List<Color> fireColors = new List<Color> {Color.red, Color.yellow, new Color(1.0f, 0.64f, 0) };
 
+    // This method will make the fire flicker
     void FixedUpdate()
     {
         if(count > 30)

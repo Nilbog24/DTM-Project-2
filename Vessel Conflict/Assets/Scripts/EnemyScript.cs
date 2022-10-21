@@ -17,6 +17,7 @@ public class EnemyScript : MonoBehaviour
         currentHits = new List<int>();
         guessGrid = Enumerable.Repeat('o', 100).ToArray();
     }
+    // This is a complicated method that places the enemy ships
     public List<int[]> PlaceEnemyShips()
     {
         List<int[]> enemyShips = new List<int[]>
@@ -73,9 +74,11 @@ public class EnemyScript : MonoBehaviour
         return enemyShips;
     }
 
+    // This method plays whenever it's the enemy's turn.
     public void NPCTurn()
     {
         List<int> hitIndex = new List<int>();
+        // This for loop will get every tile that isn't hit and make it a potential target to shoot
         for(int i = 0; i < guessGrid.Length; i++)
         {
             if(guessGrid[i] == 'h')
@@ -83,8 +86,11 @@ public class EnemyScript : MonoBehaviour
                 hitIndex.Add(i);
             }
         }
+        // If there is more than one value in hitIndex this will happen
         if(hitIndex.Count > 1)
         {
+            // This code will look at all of the not 'hit' tiles, then cross out all of the 'miss' tiles.
+            // Then it'll make make a guess based on the remaining tiles
             int diff = hitIndex[1] - hitIndex[0];
             int posNeg = Random.Range(0, 2)*2 - 1;
             int nextIndex = hitIndex[0] + diff;
@@ -98,6 +104,7 @@ public class EnemyScript : MonoBehaviour
             }
             guess = nextIndex;
         }
+        // If there is only one value is hitIndex then this will happen
         else if (hitIndex.Count == 1)
         {
             List<int> closeTiles = new List<int>();
@@ -117,6 +124,7 @@ public class EnemyScript : MonoBehaviour
             }
             guess = possibleGuess;
         }
+        // If neither of the above statements are run then this'll happen
         else
         {
             int nextIndex = Random.Range(0, 100);
@@ -131,17 +139,20 @@ public class EnemyScript : MonoBehaviour
         Vector3 vec = tile.transform.position; 
         vec.y += 15;
         GameObject missile = Instantiate(enemyMissilePrefab, vec, enemyMissilePrefab.transform.rotation);
-        Debug.Log(missile);
         missile.GetComponent<EnemyMissileScript>().SetTarget(guess);
         missile.GetComponent<EnemyMissileScript>().targetTileLocation = tile.transform.position;
     }
 
+    // This method is called when a missile hits
     public void MissileHit(int hit)
     {
+        // First this'll set the tile hit to hit on the guessing grid
         guessGrid[guess] = 'h';
+        // Then it'll end the enemy's turn
         Invoke("EndTurn", 1.0f);
     }
 
+    // This method will run when one of the players ships is sunk and it'll change the hits to x's
     public void SunkPlayer()
     {
         for(int i = 0; i < guessGrid.Length; i++)
@@ -150,11 +161,13 @@ public class EnemyScript : MonoBehaviour
         }
     }
 
+    // This method will grab the EndEnemyTurn method from the GameManager script so it can be run here
     private void EndTurn()
     {
         gameManager.GetComponent<GameManager>().EndEnemyTurn();
     }
 
+    // This method will hapen at the end of the enemy's turn and end it as well as some other stuff.
     public void PauseAndEnd(int miss)
     {
         if(currentHits.Count > 0 && currentHits[0] > miss)

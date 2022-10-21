@@ -37,23 +37,28 @@ public class TileScript : MonoBehaviour
         }
     }
 
+    // This method detects whenever another object collides with the tile
     public void OnCollisionEnter(Collision collision)
     {
+        // If the colliding object is one of the players rockets then missile hit will become true
         if(collision.gameObject.CompareTag("Missile"))
         {
             missileHit = true;
         }
+        // If the colliding object is one of the enemys missiles then the color will change.
         else if(collision.gameObject.CompareTag("EnemyMissile"))
         {
             hitColor[0] = new Color32(38, 57, 76, 255);
         }
     }
 
+    // This method sets the tiles colour
     public void SetTileColor(int index, Color32 color)
     {
         hitColor[index] = color;
     }
 
+    // This method switches the colours
     public void SwitchColors(int colorIndex)
     {
         GetComponent<Renderer>().material.color = hitColor[colorIndex];
