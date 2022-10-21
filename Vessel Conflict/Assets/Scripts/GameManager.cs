@@ -27,8 +27,10 @@ public class GameManager : MonoBehaviour
     private int enemyShipCount = 5;
     private int playerShipCount = 5;
     public GameObject firePrefab;
+    public GameObject missTextPrefab;
     private List<GameObject> playerFires = new List<GameObject>();
     private List<GameObject> enemyFires = new List<GameObject>();
+    private List<GameObject> missTexts = new List<GameObject>();
     public List<TileScript> allTileScripts;
     public Text topText;
     public Text playerShipText;
@@ -198,7 +200,7 @@ public class GameManager : MonoBehaviour
             // The tile will switch colors and then display a message saying you missed
             tile.GetComponent<TileScript>().SetTileColor(1, new Color32(38, 57, 76, 255));
             tile.GetComponent<TileScript>().SwitchColors(1); 
-            Debug.Log("Po");
+            missTexts.Add(Instantiate(missTextPrefab, tile.transform.position, Quaternion.identity));
             topText.text = "[insert lowtiergod speech here]";
         }
         // This will invoke the method that ends the players turn
@@ -247,8 +249,12 @@ public class GameManager : MonoBehaviour
         {
             fire.SetActive(false);
         }
+        foreach(GameObject text in missTexts)
+        {
+            text.SetActive(false);
+        }
         // This will make the displayed number of enemy ships equal to the number of enemy ships remaining.
-        enemyShipText.text = enemyShipCount.ToString();
+        enemyShipText.text = "Enemy Ships:" + enemyShipCount.ToString();
         // This will set the top text to display that it's the enemy's turn
         topText.text = "Enemy's turn";
         // This will call the method that happens when it's enemies turn
@@ -280,8 +286,12 @@ public class GameManager : MonoBehaviour
         {
             fire.SetActive(true);
         }
+        foreach(GameObject text in missTexts)
+        {
+            text.SetActive(true);
+        }
         // This will set the displayed number of players ships to equal the number of player's ship existing
-        playerShipText.text = playerShipCount.ToString();
+        playerShipText.text = "Player ships:" + playerShipCount.ToString();
         // This will change the top text to a promt telling the player to pick a tile
         topText.text = "piek a tiel";
         // this will make it the player's turn
