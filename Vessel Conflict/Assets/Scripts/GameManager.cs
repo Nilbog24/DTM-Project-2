@@ -184,6 +184,7 @@ public class GameManager : MonoBehaviour
                 {
                     // This'll display a message that tells you that you hit then change the colour of the tile hit
                     topText.text = "Hutr";
+                    enemyFires.Add(Instantiate(firePrefab, tile.transform.position, Quaternion.identity));
                     tile.GetComponent<TileScript>().SetTileColor(1, new Color32(255, 0, 0, 255));
                     tile.GetComponent<TileScript>().SwitchColors(1);
                 }
